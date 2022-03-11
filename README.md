@@ -1,1 +1,3 @@
-# postgresql-learning
+# Изучение PostgreSQL OTUS
+
+## Домашняя работа
