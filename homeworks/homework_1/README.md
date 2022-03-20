@@ -64,11 +64,11 @@ insert into persons(first_name, second_name) values('sergey', 'sergeev');
 
 15. Изменил уровень изоляции транзакций в обеих консолях на repeatable read
 ```sql
-set transaction isolation level repeatable read;    # изменения уровня на repeatable read
-show transaction isolation level;                   # прочерка что уровень изменился
+set transaction isolation level repeatable read;    # изменение уровня на repeatable read
+show transaction isolation level;                   # проверка что уровень изменился
 ```
 
-16. Добавил новую записб в первой консоли
+16. Добавил новую запись в первой консоли
 ```sql
 insert into persons(first_name, second_name) values('sveta', 'svetova');
 ```
