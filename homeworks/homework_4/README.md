@@ -239,5 +239,4 @@ testdb=> select * from information_schema.role_table_grants where grantee='testr
  testread | testread | testdb        | public       | t2         | REFERENCES     | YES          | NO
  testread | testread | testdb        | public       | t2         | TRIGGER        | YES          | NO
 (7 rows)
-
 ```
