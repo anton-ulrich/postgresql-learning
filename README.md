@@ -9,3 +9,5 @@
 [ Домашняя работа 3 - Установка и настройка PostgreSQL](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_3 "Homework 3")
 
 [ Домашняя работа 4 - Работа с базами данных, пользователями и правами](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_4 "Homework 4")
+
+[ Домашняя работа 5 - Настройка autovacuum с учетом оптимальной производительности](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_5 "Homework 5")
