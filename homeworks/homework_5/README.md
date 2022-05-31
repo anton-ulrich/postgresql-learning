@@ -181,7 +181,7 @@ ALTER SYSTEM
 postgres=# ALTER SYSTEM SET autovacuum_vacuum_scale_factor to 0.5;
 ALTER SYSTEM
 ```
-Перезагружаем кластер и запускаем соответствии
+Перезагружаем кластер и запускаем тест
 ![Screenshot](test2.png)
 
 Далее был предпринят ряд тестов с тразличной конфигурацией воркеров, скейлфактора, наптайма и т.д.
