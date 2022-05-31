@@ -47,6 +47,7 @@ ALTER SYSTEM
 postgres=# alter system set max_wal_size to '16GB';
 ALTER SYSTEM
 ```
+
 Изходя из запроса не все настройки применились
 ```
 postgres=# select name, setting, pending_restart from pg_settings where name in ('max_connections', 'shared_buffers', 'effective_cache_size', 'maintenance_work_mem','checkpoint_completion_target','wal_buffers','default_statistics_target','random_page_cost','effective_io_concurrency','work_mem','min_wal_size','max_wal_size');
@@ -105,6 +106,7 @@ postgres=# select name, setting, pending_restart from pg_settings where name in 
  work_mem                     | 6553    | f
 (12 rows)
 ```
+
 Настрйки применены. Заходим в систему под пользователем postgres и запускаем инициализацию pgbench
 ```
 anton@pg-homework05:~$ sudo su postgres
@@ -122,6 +124,7 @@ vacuuming...
 creating primary keys...
 done in 0.59 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 0.33 s, vacuum 0.16 s, primary keys 0.09 s).
 ```
+
 Запускаем тест pgbench
 ```
 postgres@pg-homework05:/home/anton$ pgbench -c8 -P 60 -T 600 -U postgres postgres
@@ -149,6 +152,7 @@ latency stddev = 19.144 ms
 initial connection time = 31.110 ms
 tps = 543.480511 (without initial connection time)
 ```
+
 Проверяем настройки автовакума
 ```
 postgres=# select name, setting, pending_restart from pg_settings where name like 'autovacuum%';
@@ -170,3 +174,22 @@ postgres=# select name, setting, pending_restart from pg_settings where name lik
  autovacuum_work_mem                   | -1        | f
 (14 rows)
 ```
+Корректируем настройки автовакума. Устанавливаем количество воркеров равное количеству провессоров и меняем scale factor на 0,5
+```
+postgres=# ALTER SYSTEM SET autovacuum_max_workers TO 2;
+ALTER SYSTEM
+postgres=# ALTER SYSTEM SET autovacuum_vacuum_scale_factor to 0.5;
+ALTER SYSTEM
+```
+Перезагружаем кластер и запускаем соответствии
+![Screenshot](test2.png)
+
+Далее был предпринят ряд тестов с тразличной конфигурацией воркеров, скейлфактора, наптайма и т.д.
+
+Результаты всех тестов на скриншоте ниже
+![Screenshot](all_test.png)
+
+Практически все конфигурации были немного лучше дефолтной, но каких либо существенных отличий между ними добиться не удалось. Возможно это связано с тем что PG работает на ВМ
+
+Наиболее интересные показатели были после изменения naptime до 15. Ниже 3 последних конфигурации по сравнению с дефолтной
+![Screenshot](finale.png)
