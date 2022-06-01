@@ -11,3 +11,5 @@
 [ Домашняя работа 4 - Работа с базами данных, пользователями и правами](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_4 "Homework 4")
 
 [ Домашняя работа 5 - Настройка autovacuum с учетом оптимальной производительности](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_5 "Homework 5")
+
+[ Домашняя работа 6 -Работа с журналами](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_6 "Homework 6")
