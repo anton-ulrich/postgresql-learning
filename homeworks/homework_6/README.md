@@ -40,7 +40,7 @@ anton@pg-homework06:~$
 anton@pg-homework06:~$ sudo -u postgres psql -c 'SELECT pg_current_wal_insert_lsn();'
  pg_current_wal_insert_lsn
 ---------------------------
- 0/1F75CE48
+ 0/6DC46CD8
 (1 row)
 ```
 
@@ -90,3 +90,23 @@ tps = 614.173707 (without initial connection time)
  0/56F972C0
 (1 row)
 ```
+
+Заходим в PSQL и вычисляем объем журналов за это время и получаем среднее значение размера одной контрольной точки
+```
+postgres@pg-homework06:/home/anton$ psql
+psql (14.3 (Ubuntu 14.3-1.pgdg20.04+1))
+Type "help" for help.
+
+postgres=# SELECT pg_size_pretty('0/56F972C0'::pg_lsn - '0/1F75CE48'::pg_lsn);
+ pg_size_pretty
+----------------
+ 888 MB
+(1 row)
+
+postgres=# SELECT pg_size_pretty(('0/56F972C0'::pg_lsn - '0/1F75CE48'::pg_lsn)/20);
+ pg_size_pretty
+----------------
+ 44 MB
+(1 row)
+```
+Получаем что за все время было сгенирировано 888 MB и т.к. за 10 минут прошло 20 контрольных точек то средний размер журнала получается около 44 MB
