@@ -13,4 +13,5 @@
 [ Домашняя работа 5 - Настройка autovacuum с учетом оптимальной производительности](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_5 "Homework 5")
 
 [ Домашняя работа 6 -Работа с журналами](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_6 "Homework 6")
+
 [ Домашняя работа 7 - Механизм блокировок](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_7 "Homework 7")
