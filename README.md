@@ -15,3 +15,5 @@
 [ Домашняя работа 6 -Работа с журналами](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_6 "Homework 6")
 
 [ Домашняя работа 7 - Механизм блокировок](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_7 "Homework 7")
+
+[ Домашняя работа 8 - Нагрузочное тестирование и тюнинг PostgreSQL](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_8 "Homework 8")
