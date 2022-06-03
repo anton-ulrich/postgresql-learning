@@ -30,31 +30,130 @@ done in 0.50 s (drop tables 0.01 s, create tables 0.04 s, client-side generate 0
 postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
 pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
 starting vacuum...end.
-progress: 60.0 s, 826.8 tps, lat 19.336 ms stddev 11.512
-progress: 120.0 s, 813.5 tps, lat 19.667 ms stddev 12.210
-progress: 180.0 s, 804.7 tps, lat 19.879 ms stddev 11.807
-progress: 240.0 s, 843.4 tps, lat 18.970 ms stddev 11.428
-progress: 300.0 s, 819.5 tps, lat 19.522 ms stddev 11.798
-progress: 360.0 s, 823.0 tps, lat 19.439 ms stddev 12.000
-progress: 420.0 s, 840.8 tps, lat 19.026 ms stddev 11.399
-progress: 480.0 s, 818.2 tps, lat 19.553 ms stddev 11.548
-progress: 540.0 s, 726.2 tps, lat 22.032 ms stddev 20.922
-progress: 600.0 s, 552.4 tps, lat 28.964 ms stddev 32.661
+progress: 60.0 s, 752.9 tps, lat 21.232 ms stddev 13.142
+progress: 120.0 s, 748.5 tps, lat 21.374 ms stddev 13.229
+progress: 180.0 s, 733.7 tps, lat 21.801 ms stddev 13.152
+progress: 240.0 s, 751.9 tps, lat 21.281 ms stddev 12.989
+progress: 300.0 s, 746.1 tps, lat 21.442 ms stddev 13.043
+progress: 360.0 s, 755.3 tps, lat 21.179 ms stddev 12.882
+progress: 420.0 s, 738.6 tps, lat 21.661 ms stddev 13.160
+progress: 480.0 s, 504.8 tps, lat 31.652 ms stddev 34.231
+progress: 540.0 s, 486.7 tps, lat 32.863 ms stddev 36.886
+progress: 600.0 s, 496.8 tps, lat 32.197 ms stddev 36.350
 transaction type: <builtin: TPC-B (sort of)>
 scaling factor: 1
 query mode: simple
 number of clients: 16
 number of threads: 1
 duration: 600 s
-number of transactions actually processed: 472122
-latency average = 20.331 ms
-latency stddev = 15.377 ms
-initial connection time = 28.063 ms
-tps = 786.865590 (without initial connection time)
+number of transactions actually processed: 402957
+latency average = 23.822 ms
+latency stddev = 20.938 ms
+initial connection time = 30.641 ms
+tps = 671.560585 (without initial connection time)
 ```
-Получаем средний TPS 786.
+Получаем средний TPS 671.
 
 Пробуем настроить сервер через сервер https://pgtune.leopard.in.ua/. получаем следующее
 ![Screenshot](gptune.png)
 
-Копируем предложенную конфигурацию в конец файла /etc/postgresql/14/main/postgresql.conf
+Копируем предложенную конфигурацию в конец файла /etc/postgresql/14/main/postgresql.conf и презагружаем кластер
+```
+anton@pg-homework08:~$ sudo vim /etc/postgresql/14/main/postgresql.conf
+anton@pg-homework08:~$ sudo pg_ctlcluster 14 main restart
+```
+
+Запускаем тестированирование
+```
+postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
+pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
+starting vacuum...end.
+progress: 60.0 s, 805.1 tps, lat 19.858 ms stddev 12.385
+progress: 120.0 s, 796.6 tps, lat 20.082 ms stddev 12.039
+progress: 180.0 s, 798.2 tps, lat 20.044 ms stddev 12.165
+progress: 240.0 s, 798.6 tps, lat 20.032 ms stddev 12.298
+progress: 300.0 s, 811.7 tps, lat 19.710 ms stddev 12.142
+progress: 360.0 s, 799.5 tps, lat 20.011 ms stddev 12.391
+progress: 420.0 s, 785.2 tps, lat 20.374 ms stddev 12.611
+progress: 480.0 s, 792.4 tps, lat 20.190 ms stddev 11.981
+progress: 540.0 s, 707.9 tps, lat 22.591 ms stddev 20.862
+progress: 600.0 s, 537.4 tps, lat 29.771 ms stddev 33.791
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 16
+number of threads: 1
+duration: 600 s
+number of transactions actually processed: 457972
+latency average = 20.959 ms
+latency stddev = 15.902 ms
+initial connection time = 27.865 ms
+tps = 763.277248 (without initial connection time)
+```
+Прирост составил около 13%.
+
+Пробуем еще увеличить производительность. Учитывая что в задании сказано "не
+обращая внимание на возможные проблемы с надежностью", отключаем synchronous_commit
+```
+postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
+pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
+starting vacuum...end.
+progress: 60.0 s, 2579.4 tps, lat 6.199 ms stddev 2.932
+progress: 120.0 s, 2580.1 tps, lat 6.192 ms stddev 2.966
+progress: 180.0 s, 1291.8 tps, lat 12.376 ms stddev 28.575
+progress: 240.0 s, 1276.2 tps, lat 12.534 ms stddev 29.044
+progress: 300.0 s, 1289.1 tps, lat 12.411 ms stddev 28.711
+progress: 360.0 s, 1306.7 tps, lat 12.243 ms stddev 28.487
+progress: 420.0 s, 1305.9 tps, lat 12.251 ms stddev 28.594
+progress: 480.0 s, 1276.7 tps, lat 12.531 ms stddev 29.149
+progress: 540.0 s, 1298.1 tps, lat 12.324 ms stddev 28.591
+progress: 600.0 s, 1303.4 tps, lat 12.274 ms stddev 28.605
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 16
+number of threads: 1
+duration: 600 s
+number of transactions actually processed: 930580
+latency average = 10.315 ms
+latency stddev = 23.705 ms
+initial connection time = 29.303 ms
+tps = 1550.853511 (without initial connection time)
+```
+Прирост производительности существенный(около 130%). Пробуем еще увеличить скорость отключи fsync(отключить его можно только через файл конфига)
+```
+anton@pg-homework08:~$ sudo vim /etc/postgresql/14/main/postgresql.conf
+anton@pg-homework08:~$ antonpg_ctlcluster 14 main restart
+anton@pg-homework08:~$ sudo su postgres
+postgres@pg-homework08:/home/anton$ psql -c 'show fsync'
+ fsync
+-------
+ off
+(1 row)
+
+postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
+pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
+starting vacuum...end.
+progress: 60.0 s, 2565.2 tps, lat 6.232 ms stddev 2.919
+progress: 120.1 s, 2552.7 tps, lat 6.257 ms stddev 3.006
+progress: 180.1 s, 1281.1 tps, lat 12.479 ms stddev 28.823
+progress: 240.1 s, 1259.6 tps, lat 12.698 ms stddev 29.236
+progress: 300.1 s, 1280.3 tps, lat 12.494 ms stddev 28.756
+progress: 360.1 s, 1279.0 tps, lat 12.507 ms stddev 28.777
+progress: 420.1 s, 1285.4 tps, lat 12.444 ms stddev 28.741
+progress: 480.1 s, 1302.3 tps, lat 12.285 ms stddev 28.534
+progress: 540.1 s, 1283.9 tps, lat 12.461 ms stddev 28.761
+progress: 600.1 s, 1259.2 tps, lat 12.702 ms stddev 29.495
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 16
+number of threads: 1
+duration: 600 s
+number of transactions actually processed: 921148
+latency average = 10.421 ms
+latency stddev = 23.835 ms
+initial connection time = 32.772 ms
+tps = 1535.057192 (without initial connection time)
+```
+прироста нет. Видимо из за того что в ВМ используется SSD диск который и так довольно быстро кишет данные
