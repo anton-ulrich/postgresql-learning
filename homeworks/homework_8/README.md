@@ -156,4 +156,77 @@ latency stddev = 23.835 ms
 initial connection time = 32.772 ms
 tps = 1535.057192 (without initial connection time)
 ```
-прироста нет. Видимо из за того что в ВМ используется SSD диск который и так довольно быстро кишет данные
+прироста нет. Видимо из за того что в ВМ используется SSD диск который и так довольно быстро пишет данные. Возвращаем параметр в on и пробуем отключить full_page_writes
+```
+postgres@pg-homework08:/home/anton$ exit
+exit
+anton@pg-homework08:~$ sudo vim /etc/postgresql/14/main/postgresql.conf
+anton@pg-homework08:~$ antonpg_ctlcluster 14 main restart
+anton@pg-homework08:~$ sudo su postgres
+postgres@pg-homework08:/home/anton$ psql -c 'show full_page_writes'
+ full_page_writes
+------------------
+ off
+(1 row)
+
+postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
+pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
+starting vacuum...end.
+progress: 60.0 s, 2565.6 tps, lat 6.232 ms stddev 2.999
+progress: 120.0 s, 2590.2 tps, lat 6.176 ms stddev 2.911
+progress: 180.1 s, 1298.6 tps, lat 12.294 ms stddev 28.509
+progress: 240.1 s, 1287.8 tps, lat 12.423 ms stddev 28.709
+progress: 300.1 s, 1264.7 tps, lat 12.650 ms stddev 29.330
+progress: 360.1 s, 1294.2 tps, lat 12.360 ms stddev 28.630
+progress: 420.1 s, 1301.4 tps, lat 12.291 ms stddev 28.571
+progress: 480.1 s, 1280.3 tps, lat 12.496 ms stddev 28.785
+progress: 540.1 s, 1306.2 tps, lat 12.246 ms stddev 28.444
+progress: 600.1 s, 1284.3 tps, lat 12.457 ms stddev 28.806
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 16
+number of threads: 1
+duration: 600 s
+number of transactions actually processed: 928561
+latency average = 10.339 ms
+latency stddev = 23.703 ms
+initial connection time = 31.909 ms
+tps = 1547.322019 (without initial connection time)
+```
+Существенного прироста так же нет. Возвращаем параметр обратно и пробуем подкоректировать настройки автовакума
+autovacuum_naptime=15s
+autovacuum_vacuum_scale_factor=0.05
+autovacuum_analyze_scale_factor=0.05
+autovacuum_max_workers=2
+Запускаем тест
+```
+postgres@pg-homework08:/home/anton$ pgbench -c16 -P 60 -T 600 -U postgres postgres
+pgbench (14.3 (Ubuntu 14.3-1.pgdg18.04+1))
+starting vacuum...end.
+progress: 60.0 s, 2586.7 tps, lat 6.181 ms stddev 3.162
+progress: 120.0 s, 2582.8 tps, lat 6.194 ms stddev 3.385
+progress: 180.0 s, 1292.6 tps, lat 12.376 ms stddev 28.720
+progress: 240.0 s, 1302.7 tps, lat 12.281 ms stddev 28.718
+progress: 300.0 s, 1301.1 tps, lat 12.296 ms stddev 28.667
+progress: 360.0 s, 1298.8 tps, lat 12.317 ms stddev 28.561
+progress: 420.0 s, 1278.9 tps, lat 12.507 ms stddev 28.967
+progress: 480.0 s, 1274.2 tps, lat 12.556 ms stddev 29.124
+progress: 540.0 s, 1256.9 tps, lat 12.726 ms stddev 29.321
+progress: 600.0 s, 1293.2 tps, lat 12.369 ms stddev 28.775
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 16
+number of threads: 1
+duration: 600 s
+number of transactions actually processed: 928101
+latency average = 10.342 ms
+latency stddev = 23.804 ms
+initial connection time = 32.170 ms
+tps = 1546.837271 (without initial connection time)
+```
+Существенных изменений так же нет.
+
+### Вывод
+При настройках в условиях реального железа full_page_writes и fsync возможно дали бы еще прироста производительности но в условиях вм этого не происходит, поэтому можно было бы ограничиться только отключением synchronous_commit и настройками которые были сделаны в первом тесте после изменения конфигурации
