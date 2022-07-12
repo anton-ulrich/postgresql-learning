@@ -19,3 +19,7 @@
 [ Домашняя работа 8 - Нагрузочное тестирование и тюнинг PostgreSQL](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_8 "Homework 8")
 
 [ Домашняя работа 9 - Репликация](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_9 "Homework 9")
+
+[ Домашняя работа 10 - Работа с индексами, join'ами, статистикой](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_10 "Homework 10")
+
+[ Домашняя работа 11 - Секционирование таблицы](https://github.com/anton-ulrich/postgresql-learning/tree/master/homeworks/homework_11 "Homework 11")
