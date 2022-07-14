@@ -20,3 +20,8 @@ unzip demo-big.zip
 ```
 sudo -u postgres psql -f demo-big-20170815.sql
 ```
+
+Заходим в psql, подключаемся к базе и ищем самую большую таблицу
+```
+
+```
